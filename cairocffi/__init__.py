@@ -10,7 +10,7 @@
 
 """
 
-import sys
+import sys, os
 import ctypes.util
 
 from . import constants
@@ -31,10 +31,12 @@ def dlopen(ffi, *names):
                 path = ctypes.util.find_library(lib_name)
                 if path:
                     lib = ffi.dlopen(path)
+                    print("Found Library", path)
                     if lib:
                         return lib
-            except OSError:
-                pass
+            except OSError as e:
+                if os.path.exists(path):
+                    raise e
     raise OSError("dlopen() failed to load a library: %s" % ' / '.join(names))
 
 

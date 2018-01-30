@@ -28,6 +28,16 @@ def dlopen(ffi, *names):
     for name in names:
         for lib_name in [name, 'lib' + name]:
             try:
+                path = lib_name + ".dll"
+                if path:
+                    lib = ffi.dlopen(path)
+                    print("Found Local Library", path)
+                    if lib:
+                        return lib
+            except OSError as e:
+                if os.path.exists(path):
+                    raise e
+            try:
                 path = ctypes.util.find_library(lib_name)
                 if path:
                     lib = ffi.dlopen(path)
